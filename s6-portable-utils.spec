@@ -1,5 +1,5 @@
 %define name s6-portable-utils
-%define version 1.0
+%define version 2.3.0.4
 %define release 1
 Summary: This is what s6-portable-utils does.
 Name: %{name}
@@ -12,6 +12,7 @@ BuildRoot: %{_tmppath}/%{name}-buildroot
 Prefix: %{_prefix}
 BuildArchitectures: noarch
 BuildRequires: e-smith-devtools
+BuildRequires: skalibs 
 Requires: e-smith-release >= 10.0
 AutoReqProv: no
 
@@ -19,15 +20,16 @@ AutoReqProv: no
 local build of https://github.com/skarnet/s6-portable-utils mainly for seekablepipe 
 
 %changelog
-* Day MMMM DD YYYY <brianr@koozali.org> 1.0-1.sme
-- Initial code - create RPM [SME:99999]
+* Wed Nov 13 2024 Jean-Philippe Pialasse <jpp@koozali.org> 2.3.0.4-1.sme
+- Initial code - create RPM 
 
 %prep
 
 %setup -q
 
 %build
-perl createlinks
+./configure
+make
 
 %install
 rm -rf $RPM_BUILD_ROOT
