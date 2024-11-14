@@ -1,3 +1,4 @@
+%global debug_package %{nil}
 %define name s6-portable-utils
 %define version 2.3.0.4
 %define release 1
@@ -10,9 +11,8 @@ License: GNU GPL version 2
 Group: SMEserver/addon
 BuildRoot: %{_tmppath}/%{name}-buildroot
 Prefix: %{_prefix}
-BuildArchitectures: noarch
 BuildRequires: e-smith-devtools
-BuildRequires: skalibs 
+BuildRequires: skalibs-devel 
 Requires: e-smith-release >= 10.0
 AutoReqProv: no
 
@@ -28,18 +28,17 @@ local build of https://github.com/skarnet/s6-portable-utils mainly for seekablep
 %setup -q
 
 %build
-./configure
+sed -e 's/(cat \$sysdeps\/target)/target/' -i configure
+./configure --with-sysdeps=/usr/lib64/skalibs/sysdeps --target=x86_64-redhat-linux
+#x86_64-generic-linux-gnu
 make
 
 %install
 rm -rf $RPM_BUILD_ROOT
-(cd root   ; find . -depth -print | cpio -dump $RPM_BUILD_ROOT)
+make install DESTDIR="$RPM_BUILD_ROOT"
 rm -f %{name}-%{version}-filelist
 /sbin/e-smith/genfilelist $RPM_BUILD_ROOT \
 > %{name}-%{version}-filelist
-#echo "%doc COPYING"  >> %{name}-%{version}-filelist
-#--dir <dir> 'attr(755,user,grp)' \
-#--file <file> 'attr(755,root,root)' \
 
 %clean
 cd ..
